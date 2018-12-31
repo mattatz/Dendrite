@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 327bf36e0045e2341bd8ce11a64ee0d1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - compute: {fileID: 7200000, guid: 13deb82e849713f49a0ff696b6ce14ee, type: 3}
+  - attractionMaterial: {fileID: 2100000, guid: 612b0418eb2d83c4595f905c01a36cf8,
+      type: 2}
+  - nodeMaterial: {fileID: 2100000, guid: 213e5afc93d41154383b0e3072191d0b, type: 2}
+  - edgeMaterial: {fileID: 2100000, guid: f3eb324064008034282a2fd83b307a22, type: 2}
+  - gen: {instanceID: 0}
+  - quad: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

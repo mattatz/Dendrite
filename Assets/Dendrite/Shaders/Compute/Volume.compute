@@ -1,0 +1,102 @@
+﻿#pragma kernel Clear
+#pragma kernel Bake NON_SKINNED
+#pragma kernel BakeSkinned SKINNED
+
+#include "../Common/Geometry.hlsl"
+#include "../Common/Edge.hlsl"
+
+RWTexture3D<float> _Volume;
+float3 _Min, _Size;
+float _Thickness;
+
+StructuredBuffer<Edge> _Edges;
+uint _EdgesCount;
+
+#ifndef SKINNED
+#include "../Common/Node.hlsl"
+StructuredBuffer<Node> _Nodes;
+#else
+#include "../Common/SkinnedNode.hlsl"
+StructuredBuffer<SkinnedNode> _Nodes;
+#endif
+
+[numthreads(8, 8, 8)]
+void Clear (uint3 id : SV_DispatchThreadID)
+{
+  uint width, height, depth;
+  _Volume.GetDimensions(width, height, depth);
+
+  if (id.x >= width || id.y >= height || id.z >= depth)
+    return;
+
+  _Volume[id.xyz] = 0.0;
+}
+
+[numthreads(128, 1, 1)]
+
+#ifndef SKINNED
+void Bake 
+#else
+void BakeSkinned
+#endif
+(const uint3 id : SV_DispatchThreadID)
+{
+  uint idx = id.x;
+  uint count, stride;
+  _Edges.GetDimensions(count, stride);
+  if (idx >= count || idx >= _EdgesCount)
+    return;
+
+  Edge e = _Edges[idx];
+
+  float3 ap, bp;
+
+#ifndef SKINNED
+  Node na = _Nodes[e.a], nb = _Nodes[e.b];
+  ap = na.position, bp = nb.position;
+#else
+  SkinnedNode na = _Nodes[e.a], nb = _Nodes[e.b];
+  // ap = na.position, bp = nb.position;
+  ap = na.animated, bp = nb.animated;
+#endif
+
+  if (!na.active || !nb.active)
+    return;
+
+  ap = (ap - _Min) / _Size; // 0.0 ~ 1.0
+  bp = (bp - _Min) / _Size; // 0.0 ~ 1.0
+
+  float3 dir = bp - ap;
+  bp = ap + normalize(dir) * length(dir) * nb.t;
+
+  uint width, height, depth;
+  _Volume.GetDimensions(width, height, depth);
+
+  float3 inv = float3(1.0 / width, 1.0 / height, 1.0 / depth);
+
+  float r = inv.x * _Thickness;
+  float offset = inv.x * _Thickness;
+  float3 from = float3(min(ap.x, bp.x), min(ap.y, bp.y), min(ap.z, bp.z)) - offset;
+  float3 to = float3(max(ap.x, bp.x), max(ap.y, bp.y), max(ap.z, bp.z)) + offset;
+
+  for (float z = from.z; z <= to.z; z += inv.z)
+  {
+    for (float y = from.y; y <= to.y; y += inv.y)
+    {
+      for (float x = from.x; x <= to.x; x += inv.x)
+      {
+        float3 center = float3(x, y, z);
+        float d = distance_line_to_point(ap, bp, center);
+        d = min(d, distance(ap, center));
+        d = min(d, distance(bp, center));
+
+        uint3 addr = uint3(x * width, y * height, z * depth);
+
+        float v = _Volume[addr];
+        _Volume[addr] = max(v, (1.0 - saturate(d / r)));
+      }
+    }
+  }
+
+}
+
