@@ -18,6 +18,7 @@ And DendriteMarchingCubesRendering is a volume renderer for Edge by GPU-based ma
 ## Skinned Dendrite
 
 ![SkinnedDendrite](https://raw.githubusercontent.com/mattatz/Dendrite/master/Captures/SkinnedDendrite.gif)
+
 SkinnedDendrite is a special type of Dendrite for a skinned mesh.
 It builds a animated dendrite model with SkinnedMeshRenderer as a source.
 
