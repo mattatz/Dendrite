@@ -22,7 +22,8 @@ void Search (uint3 id : SV_DispatchThreadID)
 
       if (n.active)
       {
-        float d = distance(n.position, attr.position);
+        float3 dir = attr.position - n.position;
+        float d = length(dir);
         if (d < min_dist)
         {
           min_dist = d;

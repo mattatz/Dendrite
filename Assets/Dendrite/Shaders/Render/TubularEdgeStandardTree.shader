@@ -1,9 +1,10 @@
-﻿Shader "Dendrite/TubularEdgeStandard"
+﻿Shader "Dendrite/TubularEdgeStandardTree"
 {
 
   Properties
   {
     _Thickness ("Thickness", Range(0.01, 0.1)) = 0.1
+    _Depth ("Depth", Range(10, 100)) = 50
 
     _Color ("Color", Color) = (1, 1, 1, 1)
 
@@ -29,6 +30,7 @@
       #pragma multi_compile_prepassfinal noshadowmask nodynlightmap nodirlightmap nolightmap
       #pragma multi_compile_instancing
       #pragma instancing_options procedural:setup
+      #define THICKNESS_BY_DEPTH
       #include "./TubularEdgeCommon.hlsl"
       ENDCG
     }
@@ -44,6 +46,7 @@
       #pragma multi_compile_shadowcaster noshadowmask nodynlightmap nodirlightmap nolightmap
       #pragma multi_compile_instancing
       #pragma instancing_options procedural:setup
+      #define THICKNESS_BY_DEPTH
       #include "./TubularEdgeCommon.hlsl"
       ENDCG
     }

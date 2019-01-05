@@ -6,7 +6,6 @@
     _Thickness ("Thickness", Range(0.001, 0.1)) = 0.1
 
     _Color ("Color", Color) = (1, 1, 1, 1)
-    _Gradient ("Gradient", 2D) = "" {}
 
     [Space]
     _Glossiness ("Smoothness", Range(0, 1)) = 0.5
@@ -20,7 +19,7 @@
 
     Pass
     {
-      Tags{ "LightMode" = "Deferred" }
+      Tags { "LightMode" = "Deferred" }
       CGPROGRAM
       #pragma target 4.0
       #pragma vertex vert
@@ -36,7 +35,7 @@
 
     Pass
     {
-      Tags{ "LightMode" = "ShadowCaster" }
+      Tags { "LightMode" = "ShadowCaster" }
       CGPROGRAM
       #pragma target 4.0
       #pragma vertex vert

@@ -25,8 +25,7 @@ uint _EdgesCount;
 float4 _Color;
 half _Glossiness;
 half _Metallic;
-sampler2D _Gradient;
-half _Thickness;
+half _Thickness, _Depth;
 
 float4x4 _World2Local, _Local2World;
 
@@ -44,6 +43,7 @@ struct v2g
   float3 viewDir : TANGENT;
   float2 uv : TEXCOORD0;
   float2 uv2 : TEXCOORD1;
+  float thickness : TEXCOORD2;
   float alpha : COLOR;
   UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -93,6 +93,13 @@ v2g vert(appdata IN, uint iid : SV_InstanceID)
   OUT.uv = IN.uv;
   OUT.uv2 = float2(lerp(a.offset, b.offset, IN.vid) * 0.1, 0);
   OUT.alpha = (a.active && b.active) && (iid < _EdgesCount);
+
+#if defined(THICKNESS_BY_DEPTH)
+  float offset = lerp(a.offset, b.offset, IN.vid);
+  OUT.thickness = OUT.alpha * max(0, (_Depth - offset) / _Depth);
+#else
+  OUT.thickness = OUT.alpha;
+#endif
 
   return OUT;
 }
@@ -154,7 +161,6 @@ void create_tip(
 
     OUT.RestartStrip();
   }
-
 }
 
 [maxvertexcount(64)]
@@ -168,7 +174,9 @@ void geom(line v2g IN[2], inout TriangleStream<g2f> OUT)
   float3 bn = cross(t, n);
   n = cross(t, bn);
 
-  float thickness = _Thickness * IN[0].alpha;
+  float t0 = _Thickness * IN[0].thickness;
+  float t1 = _Thickness * IN[1].thickness;
+
   float3 v0 = p0.position;
   float3 v1 = lerp(p0.position, p1.position, IN[0].alpha);
 
@@ -184,8 +192,8 @@ void geom(line v2g IN[2], inout TriangleStream<g2f> OUT)
     sincos(r, s, c);
     float3 normal = normalize(n * c + bn * s);
 
-    float3 w0 = v0 + normal * thickness;
-    float3 w1 = v1 + normal * thickness;
+    float3 w0 = v0 + normal * t0;
+    float3 w1 = v1 + normal * t1;
 
     g2f o0 = create(w0, normal, p0.uv2);
     OUT.Append(o0);
@@ -196,7 +204,7 @@ void geom(line v2g IN[2], inout TriangleStream<g2f> OUT)
   OUT.RestartStrip();
 
   // create_tip(OUT, p0.position, p0.uv2, thickness, rows, rows_inv, cols, cols_inv, -t, -n, bn);
-  create_tip(OUT, v1, p1.uv2, thickness, rows, rows_inv, cols, cols_inv, t, n, bn);
+  create_tip(OUT, v1, p1.uv2, t1, rows, rows_inv, cols, cols_inv, t, n, bn);
 };
 
 #if defined(PASS_CUBE_SHADOWCASTER)

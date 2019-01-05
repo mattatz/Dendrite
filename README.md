@@ -24,7 +24,8 @@ It builds a animated dendrite model with SkinnedMeshRenderer as a source.
 
 ## Compatibility
 
-tested on Unity 2018.2.8f1, windows10 (GTX 1060).
+Tested on Unity 2018.2.8f1, windows10 (GTX 1060).
+Requires Direct X environment.
 
 ## Sources
 
