@@ -11,4 +11,4 @@ struct Node
   bool active;
 };
 
-#endif // __NODE_INCLUDED__
+#endif

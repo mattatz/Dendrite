@@ -13,4 +13,4 @@ struct SkinnedNode
   bool active;
 };
 
-#endif // __NODE_INCLUDED__
+#endif

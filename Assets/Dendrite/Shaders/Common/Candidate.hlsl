@@ -4,7 +4,7 @@
 struct Candidate
 {
   float3 position;
-  uint index;
+  uint node;
 };
 
 #endif

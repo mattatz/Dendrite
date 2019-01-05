@@ -11,7 +11,7 @@ namespace Dendrite
     public struct Candidate 
     {
         public Vector3 position;
-        public int index;
+        public int node;
     }
 
 }

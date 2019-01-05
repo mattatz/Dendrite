@@ -551,7 +551,7 @@ MonoBehaviour:
   influenceDistance: 1.29
   growthDistance: 0.65
   killDistance: 0.49
-  growthSpeed: 25
+  growthSpeed: 22
   randomize: 0.25
   side: 32
 --- !u!1 &1998536253

@@ -67,7 +67,8 @@ namespace Dendrite
         
         protected virtual void Update () {
             Grow(Time.deltaTime);
-            if(nodesCount > 0)
+
+            if (nodesCount > 0)
             {
                 Step();
             }
@@ -145,7 +146,10 @@ namespace Dendrite
         {
             var kernel = compute.FindKernel("Grow");
             compute.SetBuffer(kernel, "_Nodes", nodeBuffer);
-            compute.SetFloat("_DT", dt * growthSpeed);
+
+            var delta = dt * growthSpeed;
+            compute.SetFloat("_DT", delta);
+
             GPUHelper.Dispatch1D(compute, kernel, count);
         }
 
