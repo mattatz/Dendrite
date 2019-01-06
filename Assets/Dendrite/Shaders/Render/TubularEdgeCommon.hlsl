@@ -22,7 +22,7 @@ StructuredBuffer<Node> _Nodes;
 StructuredBuffer<Edge> _Edges;
 uint _EdgesCount;
 
-float4 _Color;
+float4 _Color, _Emission;
 half _Glossiness;
 half _Metallic;
 half _Thickness, _Depth;
@@ -44,6 +44,7 @@ struct v2g
   float2 uv : TEXCOORD0;
   float2 uv2 : TEXCOORD1;
   float thickness : TEXCOORD2;
+  float emission : TEXCOORD3;
   float alpha : COLOR;
   UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -60,6 +61,7 @@ struct g2f
   float2 texcoord : TEXCOORD0;
   half3 ambient : TEXCOORD1;
   float3 wpos : TEXCOORD2;
+  float emission : TEXCOORD3;
 #endif
 };
 
@@ -101,10 +103,13 @@ v2g vert(appdata IN, uint iid : SV_InstanceID)
   OUT.thickness = OUT.alpha;
 #endif
 
+  float t = lerp(a.t, b.t, IN.vid);
+  OUT.emission = smoothstep(1.0, 0.0, t);
+
   return OUT;
 }
 
-g2f create(float3 wpos, float3 wnrm, float2 texcoord)
+g2f create(float3 wpos, float3 wnrm, float2 texcoord, float emission)
 {
   g2f o;
 #if defined(PASS_CUBE_SHADOWCASTER)
@@ -120,6 +125,7 @@ g2f create(float3 wpos, float3 wnrm, float2 texcoord)
   o.texcoord = texcoord;
   o.ambient = ShadeSHPerVertex(wnrm, 0);
   o.wpos = wpos;
+  o.emission = emission;
 #endif
 
   return o;
@@ -130,7 +136,7 @@ void create_tip(
   float3 position, float2 uv, float thickness,
   uint rows, float rows_inv,
   uint cols, float cols_inv,
-  float3 t, float3 n, float3 bn
+  float3 t, float3 n, float3 bn, float alpha, float emission
 )
 {
   uint row, col;
@@ -146,16 +152,16 @@ void create_tip(
       float s, c;
       sincos(r, s, c);
 
-      float3 n0 = normalize(n * c * (1.0 - s0) + bn * s * (1.0 - s0) + t * s0);
-      float3 n1 = normalize(n * c * (1.0 - s1) + bn * s * (1.0 - s1) + t * s1);
+      float3 n0 = normalize(n * c * (1.0 - s0) + bn * s * (1.0 - s0) + t * s0) * alpha;
+      float3 n1 = normalize(n * c * (1.0 - s1) + bn * s * (1.0 - s1) + t * s1) * alpha;
 
       float3 w0 = position + n0 * thickness;
       float3 w1 = position + n1 * thickness;
 
-      g2f o0 = create(w0, n0, uv);
+      g2f o0 = create(w0, n0, uv, emission);
       OUT.Append(o0);
 
-      g2f o1 = create(w1, n1, uv);
+      g2f o1 = create(w1, n1, uv, emission);
       OUT.Append(o1);
     }
 
@@ -177,8 +183,9 @@ void geom(line v2g IN[2], inout TriangleStream<g2f> OUT)
   float t0 = _Thickness * IN[0].thickness;
   float t1 = _Thickness * IN[1].thickness;
 
+  float alpha = IN[0].alpha;
   float3 v0 = p0.position;
-  float3 v1 = lerp(p0.position, p1.position, IN[0].alpha);
+  float3 v1 = lerp(p0.position, p1.position, alpha);
 
   static const uint rows = 6, cols = 6;
   static const float rows_inv = 1.0 / rows, cols_inv = 1.0 / (cols - 1);
@@ -190,21 +197,20 @@ void geom(line v2g IN[2], inout TriangleStream<g2f> OUT)
 
     float s, c;
     sincos(r, s, c);
-    float3 normal = normalize(n * c + bn * s);
+    float3 normal = normalize(n * c + bn * s) * alpha;
 
     float3 w0 = v0 + normal * t0;
     float3 w1 = v1 + normal * t1;
 
-    g2f o0 = create(w0, normal, p0.uv2);
+    g2f o0 = create(w0, normal, p0.uv2, p0.emission);
     OUT.Append(o0);
 
-    g2f o1 = create(w1, normal, p1.uv2);
+    g2f o1 = create(w1, normal, p1.uv2, p1.emission);
     OUT.Append(o1);
   }
   OUT.RestartStrip();
 
-  // create_tip(OUT, p0.position, p0.uv2, thickness, rows, rows_inv, cols, cols_inv, -t, -n, bn);
-  create_tip(OUT, v1, p1.uv2, t1, rows, rows_inv, cols, cols_inv, t, n, bn);
+  create_tip(OUT, v1, p1.uv2, t1, rows, rows_inv, cols, cols_inv, t, n, bn, alpha, p1.emission);
 };
 
 #if defined(PASS_CUBE_SHADOWCASTER)
@@ -241,7 +247,7 @@ void frag(g2f IN, out half4 outGBuffer0 : SV_Target0, out half4 outGBuffer1 : SV
   UnityStandardDataToGbuffer(data, outGBuffer0, outGBuffer1, outGBuffer2);
 
   half3 sh = ShadeSHPerPixel(data.normalWorld, IN.ambient, IN.wpos);
-  outEmission = half4(sh * c_diff, 1);
+  outEmission = _Emission * IN.emission + half4(sh * c_diff, 1);
 }
 
 #endif

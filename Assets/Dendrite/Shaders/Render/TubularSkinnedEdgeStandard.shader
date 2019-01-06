@@ -6,6 +6,7 @@
     _Thickness ("Thickness", Range(0.001, 0.1)) = 0.1
 
     _Color ("Color", Color) = (1, 1, 1, 1)
+    [HDR] _Emission ("Emission", Color) = (1, 1, 1, 1)
 
     [Space]
     _Glossiness ("Smoothness", Range(0, 1)) = 0.5
