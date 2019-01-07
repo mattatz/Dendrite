@@ -964,5 +964,5 @@ MonoBehaviour:
   growthDistance: 1.33
   killDistance: 1.07
   growthSpeed: 32
-  pointsAsset: {fileID: 4900000, guid: 453d91883bf531a42b12f8ddb198a447, type: 3}
+  volume: {fileID: 11400000, guid: 4cb70323255289743b1300f8ff784f41, type: 2}
   skinnedRenderer: {fileID: 1918001085}

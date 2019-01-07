@@ -59,7 +59,7 @@ namespace Dendrite.Demo
                     using (new GUILayout.HorizontalScope())
                     {
                         GUILayout.Label("speed : ", GUILayout.Width(labelWidth));
-                        dendrite.GrowthSpeed = GUILayout.HorizontalSlider(dendrite.GrowthSpeed, 0.25f, 100f, GUILayout.Width(sliderWidth));
+                        dendrite.GrowthSpeed = GUILayout.HorizontalSlider(dendrite.GrowthSpeed, 0.25f, 300f, GUILayout.Width(sliderWidth));
                     }
 
                     using (new GUILayout.HorizontalScope())

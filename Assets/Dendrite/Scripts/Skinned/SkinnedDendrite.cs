@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+using VolumeSampler;
+
 namespace Dendrite
 {
 
@@ -15,7 +17,7 @@ namespace Dendrite
         public override DendriteType Type { get { return DendriteType.Skinned; } }
         public override Bounds Bounds { get { return skinnedRenderer.sharedMesh.bounds; } }
 
-        [SerializeField] protected TextAsset pointsAsset;
+        [SerializeField] protected VolumeSampler.Volume volume;
         [SerializeField] protected SkinnedMeshRenderer skinnedRenderer;
 
         SkinnedAttraction[] attractions;
@@ -36,9 +38,11 @@ namespace Dendrite
             bindPoseBuffer = new ComputeBuffer(bindposes.Length, Marshal.SizeOf(typeof(Matrix4x4)));
             bindPoseBuffer.SetData(bindposes);
 
-            attractions = GeneratePoints(pointsAsset);
+            attractions = GeneratePoints(volume);
             attractionBuffer = new ComputeBuffer(attractions.Length, Marshal.SizeOf(typeof(SkinnedAttraction)), ComputeBufferType.Default);
             attractionBuffer.SetData(attractions);
+
+            unitDistance = volume.UnitLength;
 
             Reset();
         }
@@ -208,28 +212,19 @@ namespace Dendrite
             return false;
         }
 
-        protected SkinnedAttraction[] GeneratePoints(TextAsset asset, float unit = 0.01f)
+        protected SkinnedAttraction[] GeneratePoints(VolumeSampler.Volume volume)
         {
-            var lines = asset.text.Split('\n');
-
-            var attractions = new List<SkinnedAttraction>();
-
-            for(int i = 0, n = lines.Length; i < n; i++)
+            var count = volume.Points.Count;
+            var attractions = new SkinnedAttraction[volume.Points.Count];
+            for(int i = 0; i < count; i++)
             {
-                var line = lines[i];
-                Vector3 p;
-                if(Parse(line, out p))
-                {
-                    SkinnedAttraction attr = new SkinnedAttraction();
-                    attr.position = p * unit;
-                    attr.active = 1;
-                    attr.found = 0;
-                    attr.nearest = 0;
-                    attractions.Add(attr);
-                }
+                var p = volume.Points[i];
+                var attr = attractions[i];
+                attr.position = p;
+                attr.active = 1;
+                attractions[i] = attr;
             }
-
-            return attractions.ToArray();
+            return attractions;
         }
 
     }

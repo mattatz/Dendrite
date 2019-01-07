@@ -49,7 +49,7 @@ namespace Dendrite
 
         [SerializeField, Range(0.25f, 3f)] protected float influenceDistance = 0.25f;
         [SerializeField, Range(0.25f, 1f)] protected float growthDistance = 0.2f, killDistance = 0.2f;
-        [SerializeField, Range(0.25f, 100f)] protected float growthSpeed = 22f;
+        [SerializeField, Range(0.25f, 300f)] protected float growthSpeed = 22f;
 
         #region MonoBehaviour
 
