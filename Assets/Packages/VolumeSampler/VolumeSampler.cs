@@ -52,8 +52,6 @@ namespace VolumeSampler
             GetIndex(p, min, size, width, height, depth, out col, out row, out layer);
             grids[col, row, layer].Sample(p);
 
-            var R = Mathf.Min(size.x, size.y, size.z);
-
             while (actives.Count > 0)
             {
                 var found = false;

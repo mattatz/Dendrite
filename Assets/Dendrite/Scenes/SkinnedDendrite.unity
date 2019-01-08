@@ -960,9 +960,9 @@ MonoBehaviour:
   count: 0
   nodesCount: 0
   edgesCount: 0
-  influenceDistance: 2.67
-  growthDistance: 1.33
-  killDistance: 1.07
-  growthSpeed: 32
-  volume: {fileID: 11400000, guid: 4cb70323255289743b1300f8ff784f41, type: 2}
+  influenceDistance: 2.19
+  growthDistance: 1
+  killDistance: 0.79
+  growthSpeed: 66
+  volume: {fileID: 11400000, guid: c834705067970f94ea7e91271c1ac64a, type: 2}
   skinnedRenderer: {fileID: 1918001085}
