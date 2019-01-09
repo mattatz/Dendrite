@@ -77,7 +77,7 @@ namespace Dendrite
 
             CopyNodesCount();
             CopyEdgesCount();
-            Step();
+            Step(0f);
         }
 
     }

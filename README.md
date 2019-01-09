@@ -3,6 +3,8 @@ Dendrite
 
 GPU-based dendrite patterns generator with a space colonization algorithm in Unity.
 
+![SkinnedDendriteDemo](https://raw.githubusercontent.com/mattatz/Dendrite/master/Captures/SkinnedDendriteDemo.gif)
+
 ![DendriteSphere](https://raw.githubusercontent.com/mattatz/Dendrite/master/Captures/DendriteSphere.gif)
 
 Dendrite builds a branching model by feeding points as seed. 

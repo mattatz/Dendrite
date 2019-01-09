@@ -17,6 +17,8 @@ namespace Dendrite
         public override DendriteType Type { get { return DendriteType.Skinned; } }
         public override Bounds Bounds { get { return skinnedRenderer.sharedMesh.bounds; } }
 
+        [SerializeField, Range(1f, 10f)] protected float unitScale = 1f;
+
         [SerializeField] protected VolumeSampler.Volume volume;
         [SerializeField] protected SkinnedMeshRenderer skinnedRenderer;
 
@@ -42,7 +44,7 @@ namespace Dendrite
             attractionBuffer = new ComputeBuffer(attractions.Length, Marshal.SizeOf(typeof(SkinnedAttraction)), ComputeBufferType.Default);
             attractionBuffer.SetData(attractions);
 
-            unitDistance = volume.UnitLength;
+            unitDistance = volume.UnitLength * unitScale;
 
             Reset();
         }
@@ -108,7 +110,6 @@ namespace Dendrite
                 Gizmos.DrawSphere(p, 0.001f);
             }
 
-
         }
 
         #endregion
@@ -159,17 +160,16 @@ namespace Dendrite
             edgePoolBuffer.SetCounterValue(0);
 
             var seeds = new List<Vector3>();
-            for(int i = 0, n = Random.Range(2, 3); i < n; i++)
+            for(int i = 0, n = Random.Range(4, 5); i < n; i++)
             {
                 var attr = attractions[Random.Range(0, attractions.Length)];
                 seeds.Add(attr.position);
             }
-
-            // Setup(new Vector3[] { Vector3.zero });
             Setup(seeds.ToArray());
 
-            Step();
             CopyNodesCount();
+            CopyEdgesCount();
+            Step(0f);
         }
 
         protected void Animate(float t, float dt)
@@ -187,29 +187,6 @@ namespace Dendrite
                 compute.SetFloat("_DT", dt);
                 GPUHelper.Dispatch1D(compute, kernel, count);
             }
-        }
-
-        protected bool Parse(string line, out Vector3 result)
-        {
-            result = default(Vector3);
-            var values = line.Split(' ');
-            if(values.Length == 3)
-            {
-                var sx = values[0];
-                var sy = values[1];
-                var sz = values[2];
-                float x, y, z;
-                if(
-                    float.TryParse(sx, out x) && 
-                    float.TryParse(sy, out y) && 
-                    float.TryParse(sz, out z)
-                )
-                {
-                    result.Set(x, y, z);
-                    return true;
-                }
-            }
-            return false;
         }
 
         protected SkinnedAttraction[] GeneratePoints(VolumeSampler.Volume volume)

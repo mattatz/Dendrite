@@ -9,6 +9,7 @@ namespace Dendrite
     {
 
         [SerializeField] protected Material material;
+        protected MaterialPropertyBlock block;
 
         protected ComputeBuffer drawBuffer;
         protected uint[] 
@@ -21,9 +22,10 @@ namespace Dendrite
         protected void OnEnable()
         {
             segment = BuildSegment();
+            block = new MaterialPropertyBlock();
         }
 
-        protected void Update()
+        protected virtual void Update()
         {
             SetupDrawArgumentsBuffers(dendrite.Count);
             Render();
@@ -50,13 +52,12 @@ namespace Dendrite
 
         protected void Render(float extents = 100f)
         {
-            material.SetBuffer("_Nodes", dendrite.NodeBuffer);
-            material.SetBuffer("_Edges", dendrite.EdgeBuffer);
-            material.SetInt("_EdgesCount", dendrite.EdgesCount);
-            material.SetMatrix("_World2Local", transform.worldToLocalMatrix);
-            material.SetMatrix("_Local2World", transform.localToWorldMatrix);
-            material.SetPass(0);
-            Graphics.DrawMeshInstancedIndirect(segment, 0, material, new Bounds(Vector3.zero, Vector3.one * extents), drawBuffer);
+            block.SetBuffer("_Nodes", dendrite.NodeBuffer);
+            block.SetBuffer("_Edges", dendrite.EdgeBuffer);
+            block.SetInt("_EdgesCount", dendrite.EdgesCount);
+            block.SetMatrix("_World2Local", transform.worldToLocalMatrix);
+            block.SetMatrix("_Local2World", transform.localToWorldMatrix);
+            Graphics.DrawMeshInstancedIndirect(segment, 0, material, new Bounds(Vector3.zero, Vector3.one * extents), drawBuffer, 0, block);
         }
 
         protected Mesh BuildSegment()

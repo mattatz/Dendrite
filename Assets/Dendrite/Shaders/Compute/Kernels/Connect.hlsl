@@ -17,7 +17,7 @@ void Connect (uint3 id : SV_DispatchThreadID)
   #endif
 
   n2.offset = n1.offset + 1.0;
-  n2.mass = nrand(float2(c.node, idx2));
+  n2.mass = lerp(_MassMin, _MassMax, nrand(float2(c.node, idx2)));
   n2.from = c.node;
 
   _Nodes[c.node] = n1;

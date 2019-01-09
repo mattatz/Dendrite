@@ -106,7 +106,7 @@ void Start (uint3 id : SV_DispatchThreadID)
   n.t = 1;
   n.offset = 0;
   n.from = -1;
-  n.mass = nrand(id.xy);
+  n.mass = lerp(_MassMin, _MassMax, nrand(id.xy));
 
   uint nearest = -1;
   float dist = 1e8;

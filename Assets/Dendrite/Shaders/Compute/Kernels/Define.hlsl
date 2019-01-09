@@ -8,6 +8,8 @@ float _InfluenceDistance, _GrowthDistance, _KillDistance;
 float _GrowthLength;
 float _DT;
 
+float _MassMin, _MassMax;
+
 AppendStructuredBuffer<Edge> _EdgesPoolAppend;
 
 void CreateEdge(int a, int b)
