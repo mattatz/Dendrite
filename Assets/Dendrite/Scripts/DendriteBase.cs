@@ -191,8 +191,8 @@ namespace Dendrite
         protected void Remove()
         {
             var kernel = compute.FindKernel("Remove");
-            compute.SetBuffer(kernel, "_Nodes", nodeBuffer);
             compute.SetBuffer(kernel, "_Attractions", attractionBuffer);
+            compute.SetBuffer(kernel, "_Nodes", nodeBuffer);
             compute.SetFloat("_KillDistance", unitDistance * killDistance);
             GPUHelper.Dispatch1D(compute, kernel, count);
         }

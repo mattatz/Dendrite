@@ -1,26 +1,27 @@
-void Remove (uint3 id : SV_DispatchThreadID)
+void Remove(uint3 id : SV_DispatchThreadID)
 {
   uint idx = id.x;
   uint count, stride;
-  _Nodes.GetDimensions(count, stride);
+  _Attractions.GetDimensions(count, stride);
   if (idx >= count)
     return;
 
-  NODE_TYPE n = _Nodes[idx];
-  if (!n.active)
+  ATTRACTION_TYPE attr = _Attractions[idx];
+  if (!attr.active)
     return;
 
-  _Attractions.GetDimensions(count, stride);
+  _Nodes.GetDimensions(count, stride);
   for (uint i = 0; i < count; i++)
   {
-    ATTRACTION_TYPE attr = _Attractions[i];
-    if (attr.active)
+    NODE_TYPE n = _Nodes[i];
+    if (n.active)
     {
       float d = distance(attr.position, n.position);
       if (d < _KillDistance)
       {
         attr.active = false;
-        _Attractions[i] = attr;
+        _Attractions[idx] = attr;
+        return;
       }
     }
   }
