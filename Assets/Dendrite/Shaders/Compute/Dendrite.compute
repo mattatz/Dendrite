@@ -1,7 +1,7 @@
 ﻿#define NON_SKINNED
 
 #pragma kernel Setup
-#pragma kernel Start
+#pragma kernel Seed
 #pragma kernel Search
 #pragma kernel Grow
 #pragma kernel Attract
@@ -49,18 +49,18 @@ THREAD_1D
 #include "./Kernels/Setup.hlsl"
 
 THREAD_1D
-void Start (uint3 id : SV_DispatchThreadID)
+void Seed (uint3 id : SV_DispatchThreadID)
 {
   uint idx = id.x;
 
   uint count, stride;
-  _Start.GetDimensions(count, stride);
+  _Seeds.GetDimensions(count, stride);
   if (idx >= count)
     return;
 
   Node n;
   uint i = CreateNode(n);
-  n.position = _Start[idx];
+  n.position = _Seeds[idx];
   n.t = 1;
   n.offset = 0;
   n.from = -1;

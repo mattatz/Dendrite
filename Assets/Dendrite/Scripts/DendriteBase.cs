@@ -91,10 +91,10 @@ namespace Dendrite
             using(ComputeBuffer seeds = new ComputeBuffer(points.Length, Marshal.SizeOf(typeof(Vector3))))
             {
                 seeds.SetData(points);
-                kernel = compute.FindKernel("Start");
+                kernel = compute.FindKernel("Seed");
                 compute.SetFloat("_MassMin", massMin);
                 compute.SetFloat("_MassMax", massMax);
-                compute.SetBuffer(kernel, "_Start", seeds);
+                compute.SetBuffer(kernel, "_Seeds", seeds);
                 compute.SetBuffer(kernel, "_Attractions", attractionBuffer);
                 compute.SetBuffer(kernel, "_NodesPoolConsume", nodePoolBuffer);
                 compute.SetBuffer(kernel, "_Nodes", nodeBuffer);

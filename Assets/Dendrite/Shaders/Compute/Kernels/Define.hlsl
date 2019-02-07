@@ -1,7 +1,7 @@
 #ifndef __DENDRITE_DEFINE__
 #define __DENDRITE_DEFINE__
 
-StructuredBuffer<float3> _Start;
+StructuredBuffer<float3> _Seeds;
 uint _ConnectCount;
 
 float _InfluenceDistance, _GrowthDistance, _KillDistance;
