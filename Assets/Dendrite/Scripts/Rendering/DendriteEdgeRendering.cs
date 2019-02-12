@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Dendrite
 {
 
-    public class DendriteTubularRendering : DendriteRenderingBase
+    public class DendriteEdgeRendering : DendriteRenderingBase
     {
 
         [SerializeField] protected Material material;

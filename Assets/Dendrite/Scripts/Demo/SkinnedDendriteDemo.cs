@@ -10,7 +10,7 @@ namespace Dendrite.Demo
 
         [SerializeField] protected CylindricalCamera cam;
         [SerializeField] protected DendriteBase dendrite;
-        [SerializeField] protected DendriteTubularRenderingAnimation rendering;
+        [SerializeField] protected DendriteEdgeRenderingAnimation rendering;
         [SerializeField] protected Transform bone;
         [SerializeField] protected float duration = 5f;
 

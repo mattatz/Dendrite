@@ -3,10 +3,9 @@
 
   Properties
   {
+    _MainTex ("Texture", 2D) = "" {}
     _Color ("Color", Color) = (1, 1, 1, 1)
     _Size ("Size", Range(0.0, 1.0)) = 0.75
-    _Intensity ("Intensity", Range(1.0, 30.0)) = 5.0
-    [Toggle] _Border ("Border", Int) = 0
   }
 
   SubShader
@@ -45,9 +44,9 @@
       };
 
       StructuredBuffer<SkinnedAttraction> _Attractions;
+      sampler2D _MainTex;
       float4 _Color;
-      float _Size, _Intensity;
-      float _Border;
+      float _Size;
 
       float4x4 _World2Local, _Local2World;
 
@@ -68,25 +67,14 @@
           UNITY_MATRIX_P,
           float4(UnityObjectToViewPos(p.position.xyz).xyz, 1) + float4(vertex.x, vertex.y, 0, 0)
         );
-        OUT.uv = IN.uv - 0.5;
+        OUT.uv = IN.uv;
 
         return OUT;
       }
 
-      // square root of 2 * 0.25
-      static const float SQ = 0.35355339059;
-      static const float INVSQ = 1.0 / 0.35355339059;
-
       fixed4 frag(v2f IN) : SV_Target
       {
-        float d = length(IN.uv);
-
-        float alpha = saturate(1.0 - abs(SQ - d) * INVSQ);
-        alpha = saturate(alpha * alpha * alpha - 0.1);
-
-        float4 color = _Color;
-        color.a *= lerp(saturate(saturate(0.5 - d) * _Intensity), alpha, _Border);
-        return color;
+        return tex2D(_MainTex, IN.uv) * _Color;
       }
 
       ENDCG
