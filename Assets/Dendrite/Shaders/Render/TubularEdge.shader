@@ -4,8 +4,6 @@
   Properties
   {
     _Color ("Color", Color) = (1, 1, 1, 1)
-    _Gradient ("Gradient", 2D) = "" {}
-
     _Thickness ("Thickness", Range(0.01, 0.1)) = 0.1
   }
 
@@ -17,8 +15,9 @@
 
   StructuredBuffer<Node> _Nodes;
   StructuredBuffer<Edge> _Edges;
+  uint _EdgesCount;
+
   float4 _Color;
-  sampler2D _Gradient;
   half _Thickness;
 
   float4x4 _World2Local, _Local2World;
@@ -47,7 +46,6 @@
     float3 normal : NORMAL;
     float2 uv : TEXCOORD0;
     float2 uv2 : TEXCOORD1;
-    float alpha : COLOR;
   };
 
   void setup() {
@@ -72,8 +70,8 @@
     OUT.position = mul(unity_ObjectToWorld, float4(position, 1)).xyz;
     OUT.viewDir = WorldSpaceViewDir(float4(position, 1));
     OUT.uv = IN.uv;
-    OUT.uv2 = float2(lerp(a.offset, b.offset, IN.vid) * 0.1, 0);
-    OUT.alpha = a.active && b.active;
+    OUT.uv2 = float2(lerp(a.offset, b.offset, IN.vid), 0);
+    OUT.alpha = (a.active && b.active) && (iid < _EdgesCount);
 
     return OUT;
   }
@@ -83,23 +81,30 @@
     v2g p0 = IN[0];
     v2g p1 = IN[1];
 
-    float3 t = p1.position - p0.position;
-    float3 n = p0.viewDir;
+    float alpha = p0.alpha;
+
+    float3 t = normalize(p1.position - p0.position);
+    float3 n = normalize(p0.viewDir);
     float3 bn = cross(t, n);
-    float thickness = _Thickness;
-    static const uint resolution = 6;
-    static const float inv = 1.0 / resolution;
+    n = cross(t, bn);
+
+    float3 tp = lerp(p0.position, p1.position, alpha);
+    float thickness = _Thickness * alpha;
+
+    static const uint rows = 6, cols = 6;
+    static const float rows_inv = 1.0 / rows, cols_inv = 1.0 / (cols - 1);
 
     g2f o0, o1;
-    o0.uv = p0.uv; o0.uv2 = p0.uv2; o0.alpha = p0.alpha;
-    o1.uv = p1.uv; o1.uv2 = p1.uv2; o1.alpha = p1.alpha;
+    o0.uv = p0.uv; o0.uv2 = p0.uv2;
+    o1.uv = p1.uv; o1.uv2 = p1.uv2;
 
-    for (uint i = 0; i < resolution; i++) {
-      float r = (i * inv) * UNITY_TWO_PI;
+    // create side
+    for (uint i = 0; i < cols; i++) {
+      float r = (i * cols_inv) * UNITY_TWO_PI;
 
       float s, c;
       sincos(r, s, c);
-      float3 normal = normalize(n * s + bn * c);
+      float3 normal = normalize(n * c + bn * s);
 
       float3 w0 = p0.position + normal * thickness;
       float3 w1 = p1.position + normal * thickness;
@@ -111,15 +116,44 @@
       o1.position = UnityWorldToClipPos(w1);
       OUT.Append(o1);
     }
+    OUT.RestartStrip();
+
+    // create tip
+    uint row, col;
+    for (row = 0; row < rows; row++)
+    {
+      float s0 = sin((row * rows_inv) * UNITY_HALF_PI);
+      float s1 = sin(((row + 1) * rows_inv) * UNITY_HALF_PI);
+      for (col = 0; col < cols; col++)
+      {
+        float r = (col * cols_inv) * UNITY_TWO_PI;
+
+        float s, c;
+        sincos(r, s, c);
+
+        float3 n0 = normalize(n * c * (1.0 - s0) + bn * s * (1.0 - s0) + t * s0);
+        float3 n1 = normalize(n * c * (1.0 - s1) + bn * s * (1.0 - s1) + t * s1);
+
+        o0.position = UnityWorldToClipPos(float4(tp + n0 * thickness, 1));
+        o0.normal = n0;
+        OUT.Append(o0);
+
+        o1.position = UnityWorldToClipPos(float4(tp + n1 * thickness, 1));
+        o1.normal = n1;
+        OUT.Append(o1);
+      }
+      OUT.RestartStrip();
+
+    }
+
   }
 
   fixed4 frag(g2f IN) : SV_Target
   {
-    fixed4 grad = tex2D(_Gradient, IN.uv2);
-    fixed3 normal = (IN.normal + 1.0) * 0.5;
-    // return _Color * grad;
+    float3 normal = IN.normal;
+    fixed3 normal01 = (normal + 1.0) * 0.5;
     fixed4 color = _Color;
-    color.rgb *= normal.xyz;
+    color.rgb *= normal01.xyz;
     return color;
   }
 

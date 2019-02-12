@@ -368,7 +368,7 @@ GameObject:
   - component: {fileID: 2066773041}
   - component: {fileID: 2066773037}
   - component: {fileID: 2066773039}
-  - component: {fileID: 2066773040}
+  - component: {fileID: 2066773038}
   m_Layer: 0
   m_Name: Rendering
   m_TagString: Untagged
@@ -383,13 +383,27 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2066773035}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b25fd371676c634d878a8eaf14dec4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dendrite: {fileID: 1936355808}
   material: {fileID: 2100000, guid: 612b0418eb2d83c4595f905c01a36cf8, type: 2}
+--- !u!114 &2066773038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066773035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 547dfd0eb967bdb44bdd73b651366261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dendrite: {fileID: 1936355808}
+  material: {fileID: 2100000, guid: 8bad2a33a7ace974a91cc8398eaa7eb0, type: 2}
 --- !u!114 &2066773039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,20 +418,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dendrite: {fileID: 1936355808}
   material: {fileID: 2100000, guid: 213e5afc93d41154383b0e3072191d0b, type: 2}
---- !u!114 &2066773040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2066773035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 547dfd0eb967bdb44bdd73b651366261, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dendrite: {fileID: 0}
-  material: {fileID: 2100000, guid: 7d6edb904f3b9754899a46dab4f010a9, type: 2}
 --- !u!4 &2066773041
 Transform:
   m_ObjectHideFlags: 0
