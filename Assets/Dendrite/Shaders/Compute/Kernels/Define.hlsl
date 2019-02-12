@@ -6,6 +6,8 @@ uint _ConnectCount;
 
 float _InfluenceDistance, _GrowthDistance, _KillDistance;
 float _GrowthLength;
+
+float _AttractionThreshold;
 float _DT;
 
 float _MassMin, _MassMax;

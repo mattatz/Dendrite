@@ -1,4 +1,4 @@
-﻿Shader "Dendrite/TubularSkinnedEdgeAnimation"
+﻿Shader "Dendrite/TubularSkinnedEdgeOffset"
 {
 
   Properties
@@ -32,7 +32,7 @@
       #pragma instancing_options procedural:setup
       #define SKINNED
       #include "./TubularEdgeCommon.hlsl"
-      #include "./TubularEdgeAnimation.hlsl"
+      #include "./TubularEdgeOffset.hlsl"
       ENDCG
     }
 
@@ -49,7 +49,7 @@
       #pragma instancing_options procedural:setup
       #define SKINNED
       #include "./TubularEdgeCommon.hlsl"
-      #include "./TubularEdgeAnimation.hlsl"
+      #include "./TubularEdgeOffset.hlsl"
       ENDCG
     }
 

@@ -7,7 +7,7 @@ void Attract (uint3 id : SV_DispatchThreadID)
     return;
 
   NODE_TYPE n = _Nodes[idx];
-  if (n.active && n.t >= 1.0)
+  if (n.active && n.t >= _AttractionThreshold)
   {
     float3 dir = (0.0).xxx;
     uint counter = 0;

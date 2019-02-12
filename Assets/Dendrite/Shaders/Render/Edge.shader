@@ -5,6 +5,8 @@
   {
     _Color ("Color", Color) = (1, 1, 1, 1)
     _Gradient ("Gradient", 2D) = "" {}
+
+    [Toggle] _Animation ("Animation", Range(0.0, 1.0)) = 1
   }
 
   SubShader
@@ -49,10 +51,13 @@
 
       StructuredBuffer<Node> _Nodes;
       StructuredBuffer<Edge> _Edges;
-      float4 _Color;
+      uint _EdgesCount;
 
+      float4 _Color;
       sampler2D _Gradient;
       half4 _Gradient_ST;
+
+      fixed _Animation;
 
       float4x4 _World2Local, _Local2World;
 
@@ -73,14 +78,16 @@
         float3 ap = a.position;
         float3 bp = b.position;
         float3 dir = bp - ap;
-        bp = ap + normalize(dir) * length(dir) * b.t;
+        bp = ap + normalize(dir) * length(dir) * lerp(1, b.t, _Animation);
         float3 position = lerp(ap, bp, IN.vid);
+
         float4 vertex = float4(position, 1);
         OUT.position = UnityObjectToClipPos(vertex);
         OUT.uv = IN.uv;
         OUT.uv2 = float2(lerp(a.offset, b.offset, IN.vid), 0);
         OUT.uv2.x *= _Gradient_ST.x;
-        OUT.alpha = a.active && b.active;
+
+        OUT.alpha = (a.active && b.active) && (iid < _EdgesCount);
 
         return OUT;
       }

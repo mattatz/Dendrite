@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TubularSkinnedEdgeAnimation
-  m_Shader: {fileID: 4800000, guid: de580709412c07e4eb4e67a01ecfb9b2, type: 3}
+  m_Name: EdgeAnimation
+  m_Shader: {fileID: 4800000, guid: 7f0b1817b5ef95b44bb44ee2a4dec420, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -60,6 +60,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _Animation: 1
     - _Border: 0
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -67,23 +68,20 @@ Material:
     - _DstBlend: 0
     - _Far: 10.5
     - _GlossMapScale: 1
-    - _Glossiness: 0.39
+    - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Intensity: 5
-    - _Metallic: 0.05
+    - _Metallic: 0
     - _Mode: 0
     - _Near: 0.5
     - _OcclusionStrength: 1
-    - _Offset: 0
     - _Parallax: 0.02
     - _Size: 0.009
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Thickness: 0.012
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.8490566, g: 0.8109837, b: 0.748932, a: 1}
-    - _Emission: {r: 5.5190344, g: 5.555692, b: 3.7474713, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

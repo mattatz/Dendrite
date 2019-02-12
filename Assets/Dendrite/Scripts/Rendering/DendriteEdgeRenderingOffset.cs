@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Dendrite
 {
 
-    public class DendriteEdgeRenderingAnimation : DendriteEdgeRendering
+    public class DendriteEdgeRenderingOffset : DendriteEdgeRendering
     {
 
         public float Offset { get { return offset; } set { offset = value; } }
