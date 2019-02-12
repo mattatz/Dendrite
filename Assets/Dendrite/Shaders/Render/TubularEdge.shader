@@ -125,23 +125,24 @@
 
   ENDCG
 
-	SubShader
-	{
-		Tags { "RenderType"="Opaque" "Queue"="Geometry" }
-		LOD 100
+  SubShader
+  {
+    Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
+    LOD 100
 
-		Pass
-		{
+    Pass
+    {
       ZWrite On
       Cull Back
 
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma geometry geom
-			#pragma fragment frag
-			#pragma multi_compile_instancing
-			#pragma instancing_options procedural:setup
-			ENDCG
-		}
-	}
+      CGPROGRAM
+      #pragma vertex vert
+      #pragma geometry geom
+      #pragma fragment frag
+      #pragma multi_compile_instancing
+      #pragma instancing_options procedural:setup
+      ENDCG
+    }
+  }
+
 }
