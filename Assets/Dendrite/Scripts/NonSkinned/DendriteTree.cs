@@ -70,11 +70,11 @@ namespace Dendrite
             nodePoolBuffer = new ComputeBuffer(count, Marshal.SizeOf(typeof(int)), ComputeBufferType.Append);
             nodePoolBuffer.SetCounterValue(0);
 
-            candidatePoolBuffer = new ComputeBuffer(count, Marshal.SizeOf(typeof(Candidate)), ComputeBufferType.Append);
-            candidatePoolBuffer.SetCounterValue(0);
+            candidateBuffer = new ComputeBuffer(count, Marshal.SizeOf(typeof(Candidate)), ComputeBufferType.Append);
+            candidateBuffer.SetCounterValue(0);
 
-            edgePoolBuffer = new ComputeBuffer(count * 2, Marshal.SizeOf(typeof(Edge)), ComputeBufferType.Append);
-            edgePoolBuffer.SetCounterValue(0);
+            edgeBuffer = new ComputeBuffer(count * 2, Marshal.SizeOf(typeof(Edge)), ComputeBufferType.Append);
+            edgeBuffer.SetCounterValue(0);
 
             // var seeds = Enumerable.Range(0, Random.Range(1, 5)).Select((_) => { return attractions[Random.Range(0, count)].position; }).ToArray();
             Setup(new Vector3[] { Vector3.zero });

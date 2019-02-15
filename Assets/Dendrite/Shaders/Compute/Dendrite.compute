@@ -24,8 +24,8 @@ AppendStructuredBuffer<uint> _NodesPoolAppend;
 ConsumeStructuredBuffer<uint> _NodesPoolConsume;
 RWStructuredBuffer<Node> _Nodes;
 
-AppendStructuredBuffer<Candidate> _CandidatesPoolAppend;
-ConsumeStructuredBuffer<Candidate> _CandidatesPoolConsume;
+AppendStructuredBuffer<Candidate> _CandidatesAppend;
+ConsumeStructuredBuffer<Candidate> _CandidatesConsume;
 
 Node InitializeNode(Node node)
 {

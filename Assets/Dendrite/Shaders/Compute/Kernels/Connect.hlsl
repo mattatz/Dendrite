@@ -4,7 +4,7 @@ void Connect (uint3 id : SV_DispatchThreadID)
   if (idx >= _ConnectCount)
     return;
 
-  CANDIDATE_TYPE c = _CandidatesPoolConsume.Consume();
+  CANDIDATE_TYPE c = _CandidatesConsume.Consume();
 
   NODE_TYPE n1 = _Nodes[c.node];
   NODE_TYPE n2;

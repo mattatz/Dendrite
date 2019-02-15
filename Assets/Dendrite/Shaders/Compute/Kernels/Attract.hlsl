@@ -50,7 +50,7 @@ void Attract (uint3 id : SV_DispatchThreadID)
       c.bone = _Attractions[nearest].bone;
       #endif
 
-      _CandidatesPoolAppend.Append(c);
+      _CandidatesAppend.Append(c);
     }
   }
 

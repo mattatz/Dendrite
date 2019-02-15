@@ -30,8 +30,8 @@ AppendStructuredBuffer<uint> _NodesPoolAppend;
 ConsumeStructuredBuffer<uint> _NodesPoolConsume;
 RWStructuredBuffer<SkinnedNode> _Nodes;
 
-AppendStructuredBuffer<SkinnedCandidate> _CandidatesPoolAppend;
-ConsumeStructuredBuffer<SkinnedCandidate> _CandidatesPoolConsume;
+AppendStructuredBuffer<SkinnedCandidate> _CandidatesAppend;
+ConsumeStructuredBuffer<SkinnedCandidate> _CandidatesConsume;
 
 SkinnedNode InitializeNode(SkinnedNode node)
 {

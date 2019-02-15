@@ -12,14 +12,14 @@ float _DT;
 
 float _MassMin, _MassMax;
 
-AppendStructuredBuffer<Edge> _EdgesPoolAppend;
+AppendStructuredBuffer<Edge> _EdgesAppend;
 
 void CreateEdge(int a, int b)
 {
   Edge e;
   e.a = a;
   e.b = b;
-  _EdgesPoolAppend.Append(e);
+  _EdgesAppend.Append(e);
 }
 
 #ifdef SKINNED

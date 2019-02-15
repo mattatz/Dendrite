@@ -29,7 +29,7 @@ namespace Dendrite
 
         public ComputeBuffer AttractionBuffer { get { return attractionBuffer; } }
         public ComputeBuffer NodeBuffer { get { return nodeBuffer; } }
-        public ComputeBuffer EdgeBuffer { get { return edgePoolBuffer; } }
+        public ComputeBuffer EdgeBuffer { get { return edgeBuffer; } }
         public int Count { get { return count; } }
         public int NodesCount { get { return nodesCount; } }
         public int EdgesCount { get { return edgesCount; } }
@@ -37,7 +37,7 @@ namespace Dendrite
         [SerializeField] protected ComputeShader compute;
 
         protected ComputeBuffer attractionBuffer, nodeBuffer;
-        protected ComputeBuffer edgePoolBuffer, nodePoolBuffer, candidatePoolBuffer;
+        protected ComputeBuffer edgeBuffer, nodePoolBuffer, candidateBuffer;
 
         protected ComputeBuffer poolArgsBuffer;
         protected int[] poolArgs = new int[] { 0, 1, 0, 0 };
@@ -115,8 +115,8 @@ namespace Dendrite
 
             nodeBuffer.Dispose();
             nodePoolBuffer.Dispose();
-            candidatePoolBuffer.Dispose();
-            edgePoolBuffer.Dispose();
+            candidateBuffer.Dispose();
+            edgeBuffer.Dispose();
         }
 
         public virtual void Reset()
@@ -166,8 +166,8 @@ namespace Dendrite
             compute.SetBuffer(kernel, "_Attractions", attractionBuffer);
             compute.SetBuffer(kernel, "_Nodes", nodeBuffer);
 
-            candidatePoolBuffer.SetCounterValue(0);
-            compute.SetBuffer(kernel, "_CandidatesPoolAppend", candidatePoolBuffer);
+            candidateBuffer.SetCounterValue(0);
+            compute.SetBuffer(kernel, "_CandidatesAppend", candidateBuffer);
 
             compute.SetFloat("_AttractionThreshold", attractionThreshold);
             compute.SetFloat("_GrowthDistance", unitDistance * growthDistance);
@@ -181,11 +181,11 @@ namespace Dendrite
             compute.SetFloat("_MassMin", massMin);
             compute.SetFloat("_MassMax", massMax);
             compute.SetBuffer(kernel, "_Nodes", nodeBuffer);
-            compute.SetBuffer(kernel, "_EdgesPoolAppend", edgePoolBuffer);
             compute.SetBuffer(kernel, "_NodesPoolConsume", nodePoolBuffer);
-            compute.SetBuffer(kernel, "_CandidatesPoolConsume", candidatePoolBuffer);
+            compute.SetBuffer(kernel, "_EdgesAppend", edgeBuffer);
+            compute.SetBuffer(kernel, "_CandidatesConsume", candidateBuffer);
 
-            var connectCount = Mathf.Min(nodesCount, CopyPoolCount(candidatePoolBuffer));
+            var connectCount = Mathf.Min(nodesCount, CopyCount(candidateBuffer));
             if (connectCount > 0)
             {
                 compute.SetInt("_ConnectCount", connectCount);
@@ -209,15 +209,15 @@ namespace Dendrite
 
         protected int CopyNodesCount()
         {
-            return nodesCount = CopyPoolCount(nodePoolBuffer);
+            return nodesCount = CopyCount(nodePoolBuffer);
         }
 
         protected int CopyEdgesCount()
         {
-            return edgesCount = CopyPoolCount(edgePoolBuffer);
+            return edgesCount = CopyCount(edgeBuffer);
         }
 
-        protected int CopyPoolCount(ComputeBuffer buffer)
+        protected int CopyCount(ComputeBuffer buffer)
         {
             poolArgsBuffer.SetData(poolArgs);
             ComputeBuffer.CopyCount(buffer, poolArgsBuffer, 0);
