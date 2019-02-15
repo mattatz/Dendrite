@@ -47,6 +47,7 @@ namespace Dendrite
         [SerializeField] protected int count;
         [SerializeField] protected int nodesCount, edgesCount;
 
+        [SerializeField, Range(1, 5)] protected int frame = 1;
         [SerializeField, Range(1, 5)] protected int iterations = 1;
         [SerializeField, Range(0f, 1f)] protected float massMin = 0.25f, massMax = 1f;
         [SerializeField, Range(0.25f, 3f)] protected float influenceDistance = 0.25f;
@@ -69,6 +70,8 @@ namespace Dendrite
         }
         
         protected virtual void Update () {
+            if (Time.frameCount % frame != 0) return;
+
             for (int i = 0; i < iterations; i++)
                 Step(Time.deltaTime);
         }

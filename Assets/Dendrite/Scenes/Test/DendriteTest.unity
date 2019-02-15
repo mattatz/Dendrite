@@ -347,6 +347,7 @@ MonoBehaviour:
   count: 0
   nodesCount: 0
   edgesCount: 0
+  frame: 1
   iterations: 1
   massMin: 0.25
   massMax: 1
