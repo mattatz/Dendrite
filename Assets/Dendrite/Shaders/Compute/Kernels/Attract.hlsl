@@ -12,8 +12,10 @@ void Attract (uint3 id : SV_DispatchThreadID)
     float3 dir = (0.0).xxx;
     uint counter = 0;
 
+    #ifdef SKINNED
     float dist = 1e8;
     uint nearest = -1;
+    #endif
 
     // search neighbors in radius
     _Attractions.GetDimensions(count, stride);
@@ -26,12 +28,14 @@ void Attract (uint3 id : SV_DispatchThreadID)
         dir += normalize(dir2);
         counter++;
 
+        #ifdef SKINNED
         float l2 = length(dir2);
         if (l2 < dist)
         {
           dist = l2;
           nearest = i;
         }
+        #endif
       }
     }
 
@@ -41,9 +45,11 @@ void Attract (uint3 id : SV_DispatchThreadID)
       dir = dir / counter;
       c.position = n.position + (dir * _GrowthDistance);
       c.node = idx;
+
       #ifdef SKINNED
       c.bone = _Attractions[nearest].bone;
       #endif
+
       _CandidatesPoolAppend.Append(c);
     }
   }
